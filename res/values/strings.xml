@@ -145,6 +145,6 @@
          Attempts to mimic homepage_base in Browser; {CID} should be replaced
          by the client-id, e.g. "android-google". -->
     <string name="default_browser_url" translatable="false">
-        http://www.google.com/m?client=ms-{CID}&amp;source=android-home-hotseat</string>
+        http://www.arowboat.org</string>
 
 </resources>
