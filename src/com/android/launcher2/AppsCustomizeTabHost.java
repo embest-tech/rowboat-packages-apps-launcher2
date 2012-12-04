@@ -23,7 +23,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -57,8 +56,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     private boolean mResetAfterTransition;
     private Runnable mRelayoutAndMakeVisible;
 
-    private Launcher mLauncher;
-
     public AppsCustomizeTabHost(Context context, AttributeSet attrs) {
         super(context, attrs);
         mLayoutInflater = LayoutInflater.from(context);
@@ -68,10 +65,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                     mTabsContainer.setAlpha(1f);
                 }
             };
-    }
-
-    public void setup(Launcher launcher) {
-        mLauncher = launcher;
     }
 
     /**
@@ -269,7 +262,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                 onTabChangedEnd(type);
 
                 // Animate the transition
-                ObjectAnimator outAnim = ObjectAnimator.ofFloat(mAnimationBuffer, "alpha", 0f);
+                ObjectAnimator outAnim = LauncherAnimUtils.ofFloat(mAnimationBuffer, "alpha", 0f);
                 outAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -282,14 +275,14 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
                         mAnimationBuffer.removeAllViews();
                     }
                 });
-                ObjectAnimator inAnim = ObjectAnimator.ofFloat(mAppsCustomizePane, "alpha", 1f);
+                ObjectAnimator inAnim = LauncherAnimUtils.ofFloat(mAppsCustomizePane, "alpha", 1f);
                 inAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         reloadCurrentPage();
                     }
                 });
-                AnimatorSet animSet = new AnimatorSet();
+                AnimatorSet animSet = LauncherAnimUtils.createAnimatorSet();
                 animSet.playTogether(outAnim, inAnim);
                 animSet.setDuration(duration);
                 animSet.start();
@@ -359,11 +352,6 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // force building the layer, so you don't get a blip early in an animation
             // when the layer is created layer
             buildLayer();
-
-            // Let the GC system know that now is a good time to do any garbage
-            // collection; makes it less likely we'll get a GC during the all apps
-            // to workspace animation
-            System.gc();
         }
     }
 
